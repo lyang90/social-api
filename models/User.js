@@ -4,24 +4,24 @@ const { Schema, model } = require('mongoose');
 const userSchema = new Schema(
   {
     userName: {
-        type: String, 
-        required: true, 
-        unique: true,
-        trim: true,
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-       // VALIDATE EMAIL 
+      type: String,
+      required: true,
+      unique: true,
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please use a valid email']
     },
     thoughts: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'thought'
-        }
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'thought'
+      }
     ],
-    friends: [friend]
+    friends: [userSchema]
   },
   {
     toJSON: {
@@ -31,21 +31,15 @@ const userSchema = new Schema(
   }
 );
 
-// TODO SETUP VIRTUAL FOR FRIEND AMOUNT
+// friend count virtual
 userSchema
   .virtual('friendCount')
   // Getter
   .get(function () {
-    return `${this.first} ${this.last}`;
+    return this.friends.length;
   })
-  // Setter to set the first and last name
-  .set(function (v) {
-    const first = v.split(' ')[0];
-    const last = v.split(' ')[1];
-    this.set({ first, last });
-  });
 
-// Initialize our User model
+
 const User = model('user', userSchema);
 
 module.exports = User;

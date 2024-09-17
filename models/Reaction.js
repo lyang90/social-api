@@ -12,8 +12,8 @@ const reactionSchema = new Schema(
       maxlength: 280,
     },
     userName: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     createdAt: {
       type: Date,
@@ -29,7 +29,7 @@ const reactionSchema = new Schema(
 );
 // TODO: FIX GETTER METHOD FOR DATE
 reactionSchema.get(function () {
-    return `${this.first} ${this.last}`;
-  });
+  return `${this.first} ${this.last}`;
+});
 
 module.exports = reactionSchema;

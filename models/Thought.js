@@ -1,22 +1,22 @@
 const { Schema, model } = require('mongoose');
-
+const reactionSchema = require('./Reaction');
 
 const thoughtSchema = new Schema(
   {
     thoughtText: {
-        type: String, 
-        required: true, 
-        min_length: 1,
-        max_length: 280,
+      type: String,
+      required: true,
+      min_length: 1,
+      max_length: 280,
     },
     createdAt: {
-        type: Date,
-        default: Date.now,
+      type: Date,
+      default: () => new Date("<mm-dd-YYYY>"),
     },
-    userName: 
+    userName:
     {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     reactions: [reactionSchema]
   },
@@ -28,21 +28,13 @@ const thoughtSchema = new Schema(
   }
 );
 
-// TODO SETUP VIRTUAL FOR reaction AMOUNT
+// virtual for reaction count
 thoughtSchema
   .virtual('reactionCount')
-  // Getter
   .get(function () {
-    return `${this.first} ${this.last}`;
-  })
-  // Setter to set the first and last name
-  .set(function (v) {
-    const first = v.split(' ')[0];
-    const last = v.split(' ')[1];
-    this.set({ first, last });
+    return this.reactions.length;
   });
 
-// Initialize our User model
 const thought = model('thought', thoughtSchema);
 
 module.exports = thought;
