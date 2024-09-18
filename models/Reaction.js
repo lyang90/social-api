@@ -18,6 +18,7 @@ const reactionSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: (timestamp) => dateFormat(timestamp)
     },
   },
   {
@@ -27,9 +28,5 @@ const reactionSchema = new Schema(
     id: false,
   }
 );
-// TODO: FIX GETTER METHOD FOR DATE
-reactionSchema.get(function () {
-  return `${this.first} ${this.last}`;
-});
 
 module.exports = reactionSchema;
