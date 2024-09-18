@@ -67,4 +67,43 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+  // create reaction
+  async createReaction(req, res) {
+    try {
+      const reactionData = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $addToSet: { reactions: req.body } },
+        { runValidators: true, new: true }
+      );
+      
+      if (!reactionData) {
+        return res.status(404).json({ message: 'No reaction found with id given.' });
+      }
+
+      res.json(reactionData);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  // Delete Reaction
+  async deleteReaction(req, res) {
+    try {
+      const reaction = await Thought.findOneAndUpdate(
+        { _id: req.params.reactionId },
+        { $pull: { reaction: { reactionId: req.params.reactionId } } },
+        { runValidators: true, new: true }
+      );
+
+      if (!reaction) {
+        return res.status(404).json({ message: 'No reaction found with id given.' });
+      }
+
+      res.json({ message: 'The reaction has been deleted.' })
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
 };
