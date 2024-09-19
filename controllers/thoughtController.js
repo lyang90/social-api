@@ -38,7 +38,11 @@ module.exports = {
   // update thought
   async updateThought(req, res) {
     try {
-      const thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId });
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
 
       if (!thought) {
         return res.status(404).json({ message: 'No thought found with id given.' });
@@ -70,6 +74,7 @@ module.exports = {
 
   // create reaction
   async createReaction(req, res) {
+    console.log("createReaction", req.body);
     try {
       const reactionData = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
@@ -84,6 +89,7 @@ module.exports = {
       res.json(reactionData);
     } catch (err) {
       res.status(500).json(err);
+      console.log(err);
     }
   },
 
